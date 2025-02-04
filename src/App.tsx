@@ -5,8 +5,7 @@ function App() {
   return (
     <>
       <Header />
-      <div className="max-w-7xl mx-auto">
-        <h1>Seminars</h1>
+      <div className="max-w-7xl mx-auto p-2">
         <SeminarList />
       </div>
     </>

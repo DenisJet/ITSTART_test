@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import SeminarCard from "../SeminarCard/SeminarCard";
 
-interface ISeminar {
+export interface ISeminar {
   id: number;
   title: string;
   description: string;
@@ -34,21 +35,12 @@ export default function SeminarList() {
   }
 
   return (
-    <div>
-      <h2>Ours Seminars</h2>
-      <ul>
-        {seminars.map((seminar: ISeminar) => (
-          <li key={seminar.id}>
-            <h3>{seminar.title}</h3>
-            <img src={seminar.photo} alt="photo" />
-            <p>{seminar.description}</p>
-            <div>
-              <span>Date: {seminar.date}</span>{" "}
-              <span>Time: {seminar.time}</span>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul className="flex flex-wrap gap-5 justify-center">
+      {seminars.map((seminar: ISeminar) => (
+        <li key={seminar.id}>
+          <SeminarCard seminar={seminar} />
+        </li>
+      ))}
+    </ul>
   );
 }
