@@ -1,11 +1,15 @@
+import Header from "./components/Header/Header";
 import SeminarList from "./components/SeminarsList/SeminarsList";
 
 function App() {
   return (
-    <div>
-      <h1>Seminars</h1>
-      <SeminarList />
-    </div>
+    <>
+      <Header />
+      <div className="max-w-7xl mx-auto">
+        <h1>Seminars</h1>
+        <SeminarList />
+      </div>
+    </>
   );
 }
 
