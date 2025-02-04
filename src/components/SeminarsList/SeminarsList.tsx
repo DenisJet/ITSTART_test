@@ -31,7 +31,22 @@ export default function SeminarList() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <ul className="flex flex-wrap gap-5 justify-center">
+          {[1, 2, 3, 4, 5, 6].map((item) => (
+            <li key={item}>
+              <div className="flex w-96 flex-col gap-4">
+                <div className="skeleton h-64 w-full"></div>
+                <div className="skeleton h-12 w-full"></div>
+                <div className="skeleton h-12 w-full"></div>
+                <div className="skeleton h-12 w-full"></div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
   }
 
   return (

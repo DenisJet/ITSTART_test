@@ -2,7 +2,7 @@ import { ISeminar } from "../SeminarsList/SeminarsList";
 
 export default function SeminarCard({ seminar }: { seminar: ISeminar }) {
   return (
-    <div className="card bg-info-content w-96 shadow-sm h-full">
+    <div className="card bg-info-content max-w-96 shadow-sm h-full">
       <img
         src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
         alt="Shoes"
