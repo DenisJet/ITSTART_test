@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import SeminarCard from "../SeminarCard/SeminarCard";
+import DeleteSeminarModal from "../DeleteSeminarModal/DeleteSeminarModal";
 
 export interface ISeminar {
   id: number;
@@ -14,6 +15,7 @@ export interface ISeminar {
 export default function SeminarList() {
   const [seminars, setSeminars] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeSeminar, setActiveSeminar] = useState<ISeminar | null>(null);
 
   useEffect(() => {
     const getSeminars = async () => {
@@ -29,6 +31,30 @@ export default function SeminarList() {
 
     getSeminars();
   }, []);
+
+  const deleteSeminarModalOpenClick = (seminar: ISeminar) => {
+    const deleteSeminarModal = document.getElementById(
+      "delete_seminar_modal",
+    ) as HTMLDialogElement | null;
+    setActiveSeminar(seminar);
+    deleteSeminarModal?.showModal();
+  };
+
+  const deleteSeminar = async (id: number) => {
+    const deleteSeminarModal = document.getElementById(
+      "delete_seminar_modal",
+    ) as HTMLDialogElement | null;
+    setActiveSeminar(null);
+    deleteSeminarModal?.close();
+
+    try {
+      await axios.delete(`http://localhost:3001/seminars/${id}`);
+      setSeminars(seminars.filter((seminar: ISeminar) => seminar.id !== id));
+    } catch (error) {
+      console.error("Error deleting seminar:", error);
+      alert("Не получилось удалить семинар! Попробуйте ещё раз.");
+    }
+  };
 
   if (loading) {
     return (
@@ -50,12 +76,21 @@ export default function SeminarList() {
   }
 
   return (
-    <ul className="flex flex-wrap gap-5 justify-center">
-      {seminars.map((seminar: ISeminar) => (
-        <li key={seminar.id}>
-          <SeminarCard seminar={seminar} />
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul className="flex flex-wrap gap-5 justify-center">
+        {seminars.map((seminar: ISeminar) => (
+          <li key={seminar.id}>
+            <SeminarCard
+              seminar={seminar}
+              onDeleteModalOpen={deleteSeminarModalOpenClick}
+            />
+          </li>
+        ))}
+      </ul>
+      <DeleteSeminarModal
+        seminar={activeSeminar as ISeminar}
+        onDelete={deleteSeminar}
+      />
+    </>
   );
 }

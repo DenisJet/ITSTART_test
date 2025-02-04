@@ -1,6 +1,12 @@
 import { ISeminar } from "../SeminarsList/SeminarsList";
 
-export default function SeminarCard({ seminar }: { seminar: ISeminar }) {
+export default function SeminarCard({
+  seminar,
+  onDeleteModalOpen,
+}: {
+  seminar: ISeminar;
+  onDeleteModalOpen: (seminar: ISeminar) => void;
+}) {
   return (
     <div className="card bg-info-content max-w-96 shadow-sm h-full">
       <img
@@ -16,7 +22,12 @@ export default function SeminarCard({ seminar }: { seminar: ISeminar }) {
         </div>
         <div className="card-actions justify-end">
           <button className="btn btn-info">Редактировать</button>
-          <button className="btn btn-error">Удалить</button>
+          <button
+            className="btn btn-error"
+            onClick={() => onDeleteModalOpen(seminar)}
+          >
+            Удалить
+          </button>
         </div>
       </div>
     </div>
