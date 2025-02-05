@@ -3,11 +3,13 @@ import { ISeminar } from "../SeminarsList/SeminarsList";
 interface DeleteSeminarModalProps {
   seminar: ISeminar;
   onDelete: (id: number) => void;
+  isDeleting: boolean;
 }
 
 export default function DeleteSeminarModal({
   seminar,
   onDelete,
+  isDeleting,
 }: DeleteSeminarModalProps) {
   const handleDelete = () => {
     if (seminar.id) {
@@ -22,7 +24,11 @@ export default function DeleteSeminarModal({
         <p className="text-xl">{seminar?.title}</p>
         <div className="modal-action">
           <button onClick={handleDelete} className="btn btn-error">
-            Удалить
+            {isDeleting ? (
+              <span className="loading loading-spinner loading-md"></span>
+            ) : (
+              "Удалить"
+            )}
           </button>
           <form method="dialog">
             <button className="btn btn-success">Отмена</button>

@@ -5,11 +5,13 @@ import { convertDateFormat } from "../../helpers/convertDateFormat";
 interface EditSeminarModalProps {
   seminar: ISeminar;
   onEditSave: (updatedSeminar: ISeminar) => void;
+  isEditing: boolean;
 }
 
 export default function EditSeminarModal({
   seminar,
   onEditSave,
+  isEditing,
 }: EditSeminarModalProps) {
   const [formData, setFormData] = useState({
     title: "",
@@ -94,7 +96,11 @@ export default function EditSeminarModal({
         </fieldset>
         <div className="modal-action">
           <button className="btn btn-success" onClick={handleSave}>
-            Сохранить
+            {isEditing ? (
+              <span className="loading loading-spinner loading-md"></span>
+            ) : (
+              "Сохранить"
+            )}
           </button>
           <form method="dialog">
             <button className="btn btn-error">Отмена</button>

@@ -17,6 +17,8 @@ export default function SeminarList() {
   const [seminars, setSeminars] = useState<ISeminar[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeSeminar, setActiveSeminar] = useState<ISeminar | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const getSeminars = async () => {
@@ -25,6 +27,7 @@ export default function SeminarList() {
         setSeminars(response.data);
       } catch (error) {
         console.error("Error loading seminars:", error);
+        alert("Не удалось загрузить данные");
       } finally {
         setLoading(false);
       }
@@ -42,11 +45,7 @@ export default function SeminarList() {
   };
 
   const deleteSeminar = async (id: number) => {
-    const deleteSeminarModal = document.getElementById(
-      "delete_seminar_modal",
-    ) as HTMLDialogElement | null;
-    setActiveSeminar(null);
-    deleteSeminarModal?.close();
+    setIsDeleting(true);
 
     try {
       await axios.delete(`http://localhost:3001/seminars/${id}`);
@@ -55,6 +54,14 @@ export default function SeminarList() {
       console.error("Error deleting seminar:", error);
       alert("Не получилось удалить семинар! Попробуйте ещё раз.");
     }
+
+    const deleteSeminarModal = document.getElementById(
+      "delete_seminar_modal",
+    ) as HTMLDialogElement | null;
+
+    setActiveSeminar(null);
+    deleteSeminarModal?.close();
+    setIsDeleting(false);
   };
 
   const editSeminarModalOpenClick = (seminar: ISeminar) => {
@@ -66,12 +73,7 @@ export default function SeminarList() {
   };
 
   const editSaveSeminar = async (updatedSeminar: ISeminar) => {
-    const editSeminarModal = document.getElementById(
-      "edit_seminar_modal",
-    ) as HTMLDialogElement | null;
-    setActiveSeminar(null);
-    editSeminarModal?.close();
-
+    setIsEditing(true);
     try {
       await axios.put(
         `http://localhost:3001/seminars/${updatedSeminar.id}`,
@@ -86,6 +88,14 @@ export default function SeminarList() {
       console.error("Error updating seminar:", error);
       alert("Не удалось обновить семинар! Попробуйте ещё раз.");
     }
+
+    const editSeminarModal = document.getElementById(
+      "edit_seminar_modal",
+    ) as HTMLDialogElement | null;
+
+    setActiveSeminar(null);
+    editSeminarModal?.close();
+    setIsEditing(false);
   };
 
   if (loading) {
@@ -123,10 +133,12 @@ export default function SeminarList() {
       <DeleteSeminarModal
         seminar={activeSeminar as ISeminar}
         onDelete={deleteSeminar}
+        isDeleting={isDeleting}
       />
       <EditSeminarModal
         seminar={activeSeminar as ISeminar}
         onEditSave={editSaveSeminar}
+        isEditing={isEditing}
       />
     </>
   );
