@@ -1,22 +1,27 @@
 import { ISeminar } from "../SeminarsList/SeminarsList";
 
+interface DeleteSeminarModalProps {
+  seminar: ISeminar;
+  onDelete: (id: number) => void;
+}
+
 export default function DeleteSeminarModal({
   seminar,
   onDelete,
-}: {
-  seminar: ISeminar;
-  onDelete: (id: number) => void;
-}) {
+}: DeleteSeminarModalProps) {
+  const handleDelete = () => {
+    if (seminar.id) {
+      onDelete(seminar.id);
+    }
+  };
+
   return (
     <dialog id="delete_seminar_modal" className="modal">
       <div className="modal-box text-center">
         <p className="py-4">Вы действительно хотите удалить семинар:</p>
         <p className="text-xl">{seminar?.title}</p>
         <div className="modal-action">
-          <button
-            onClick={() => onDelete(seminar?.id)}
-            className="btn btn-error"
-          >
+          <button onClick={handleDelete} className="btn btn-error">
             Удалить
           </button>
           <form method="dialog">
