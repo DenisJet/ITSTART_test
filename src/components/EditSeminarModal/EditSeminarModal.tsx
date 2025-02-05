@@ -1,69 +1,50 @@
 import { useEffect, useState } from "react";
 import { ISeminar } from "../SeminarsList/SeminarsList";
+import { convertDateFormat } from "../../helpers/convertDateFormat";
+
+interface EditSeminarModalProps {
+  seminar: ISeminar;
+  onEditSave: (updatedSeminar: ISeminar) => void;
+}
 
 export default function EditSeminarModal({
   seminar,
   onEditSave,
-}: {
-  seminar: ISeminar;
-  onEditSave: (updatedSeminar: ISeminar) => void;
-}) {
-  const [title, setTitle] = useState(seminar?.title);
-  const [description, setDescription] = useState(seminar?.description);
-  const [date, setDate] = useState(seminar?.date);
-  const [time, setTime] = useState(seminar?.time);
+}: EditSeminarModalProps) {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    date: "",
+    time: "",
+  });
 
   useEffect(() => {
     if (seminar) {
-      setTitle(seminar.title);
-      setDescription(seminar.description);
-      setDate(seminar.date);
-      setTime(seminar.time);
+      setFormData({
+        title: seminar.title,
+        description: seminar.description,
+        date: convertDateFormat(seminar.date, true),
+        time: seminar.time,
+      });
     }
   }, [seminar]);
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-  };
-
-  const handleDescriptionChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setDescription(e.target.value);
-  };
-
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(e.target.value);
-    console.log(e.target.value);
-  };
-
-  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTime(e.target.value);
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSave = () => {
     if (seminar) {
       const updatedSeminar: ISeminar = {
         ...seminar,
-        title,
-        description,
-        date,
-        time,
+        ...formData,
+        date: convertDateFormat(formData.date, false),
       };
       onEditSave(updatedSeminar);
     }
-  };
-
-  const convertDateFormat = (dateString: string) => {
-    if (dateString) {
-      const parts = dateString.split(".");
-      if (parts.length === 3) {
-        const [day, month, year] = parts;
-        return `${year}-${month}-${day}`;
-      }
-    }
-
-    return dateString;
   };
 
   return (
@@ -76,8 +57,9 @@ export default function EditSeminarModal({
 
           <label className="fieldset-label text-base">Заголовок</label>
           <input
-            value={title}
-            onChange={handleTitleChange}
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
             type="text"
             className="input"
             placeholder="Заголовок"
@@ -85,24 +67,27 @@ export default function EditSeminarModal({
 
           <label className="fieldset-label text-base">Описание</label>
           <textarea
-            value={description}
-            onChange={handleDescriptionChange}
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
             className="textarea"
             placeholder="Описание"
           />
 
           <label className="fieldset-label text-base">Дата</label>
           <input
-            value={convertDateFormat(date)}
-            onChange={handleDateChange}
+            name="date"
+            value={convertDateFormat(formData.date, true)}
+            onChange={handleChange}
             type="date"
             className="input"
           />
 
           <label className="fieldset-label text-base">Время</label>
           <input
-            value={time}
-            onChange={handleTimeChange}
+            name="time"
+            value={formData.time}
+            onChange={handleChange}
             type="time"
             className="input"
           />
