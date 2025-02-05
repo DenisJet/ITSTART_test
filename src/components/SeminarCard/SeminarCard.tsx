@@ -3,9 +3,11 @@ import { ISeminar } from "../SeminarsList/SeminarsList";
 export default function SeminarCard({
   seminar,
   onDeleteModalOpen,
+  onEditModalOpen,
 }: {
   seminar: ISeminar;
   onDeleteModalOpen: (seminar: ISeminar) => void;
+  onEditModalOpen: (seminar: ISeminar) => void;
 }) {
   return (
     <div className="card bg-info-content max-w-96 shadow-sm h-full">
@@ -21,7 +23,12 @@ export default function SeminarCard({
           <span>Время: {seminar.time}</span>
         </div>
         <div className="card-actions justify-end">
-          <button className="btn btn-info">Редактировать</button>
+          <button
+            className="btn btn-info"
+            onClick={() => onEditModalOpen(seminar)}
+          >
+            Редактировать
+          </button>
           <button
             className="btn btn-error"
             onClick={() => onDeleteModalOpen(seminar)}

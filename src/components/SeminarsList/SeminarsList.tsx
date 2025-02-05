@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import SeminarCard from "../SeminarCard/SeminarCard";
 import DeleteSeminarModal from "../DeleteSeminarModal/DeleteSeminarModal";
+import EditSeminarModal from "../EditSeminarModal/EditSeminarModal";
 
 export interface ISeminar {
   id: number;
@@ -13,7 +14,7 @@ export interface ISeminar {
 }
 
 export default function SeminarList() {
-  const [seminars, setSeminars] = useState([]);
+  const [seminars, setSeminars] = useState<ISeminar[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeSeminar, setActiveSeminar] = useState<ISeminar | null>(null);
 
@@ -56,6 +57,37 @@ export default function SeminarList() {
     }
   };
 
+  const editSeminarModalOpenClick = (seminar: ISeminar) => {
+    const editSeminarModal = document.getElementById(
+      "edit_seminar_modal",
+    ) as HTMLDialogElement | null;
+    setActiveSeminar(seminar);
+    editSeminarModal?.showModal();
+  };
+
+  const editSaveSeminar = async (updatedSeminar: ISeminar) => {
+    const editSeminarModal = document.getElementById(
+      "edit_seminar_modal",
+    ) as HTMLDialogElement | null;
+    setActiveSeminar(null);
+    editSeminarModal?.close();
+
+    try {
+      await axios.put(
+        `http://localhost:3001/seminars/${updatedSeminar.id}`,
+        updatedSeminar,
+      );
+      setSeminars(
+        seminars.map((seminar: ISeminar) =>
+          seminar.id === updatedSeminar.id ? updatedSeminar : seminar,
+        ),
+      );
+    } catch (error) {
+      console.error("Error updating seminar:", error);
+      alert("Не удалось обновить семинар! Попробуйте ещё раз.");
+    }
+  };
+
   if (loading) {
     return (
       <div>
@@ -83,6 +115,7 @@ export default function SeminarList() {
             <SeminarCard
               seminar={seminar}
               onDeleteModalOpen={deleteSeminarModalOpenClick}
+              onEditModalOpen={editSeminarModalOpenClick}
             />
           </li>
         ))}
@@ -90,6 +123,10 @@ export default function SeminarList() {
       <DeleteSeminarModal
         seminar={activeSeminar as ISeminar}
         onDelete={deleteSeminar}
+      />
+      <EditSeminarModal
+        seminar={activeSeminar as ISeminar}
+        onEditSave={editSaveSeminar}
       />
     </>
   );
